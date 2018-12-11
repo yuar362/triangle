@@ -1,6 +1,7 @@
 #ifndef __VECTOR3D_H__
 #define __VECTOR3D_H__
 #include <array>
+#include <functional>
 
 class Vector3D
 {
@@ -13,14 +14,16 @@ public:
 	Vector3D(const std::array<double, vector_size> & point_);
 	Vector3D cross(const Vector3D & rhs_) const;		//векторное произведение
 	double operator*(const Vector3D & rhs_) const;	//скалярное произведение
-	Vector3D operator*(double coeff_) const;
-	Vector3D & operator*=(double coeff_);
+	Vector3D operator*(const double coeff_) const;
+	Vector3D & operator*=(const double coeff_);
 	Vector3D operator+(const Vector3D & rhs_) const;
 	Vector3D operator-(const Vector3D & rhs_) const;
 	bool operator==(const Vector3D& rhs_) const;	
 	double length() const;
 	Vector3D norm() const;	//направление (вектор единичной длины)
-	double& operator[](size_t index_);	
+	double& operator[](size_t index_);
+	const double& operator[](size_t index_) const;
+	bool  find(std::function<bool (double)> condition_, size_t& index_) const;
 private:
 	std::array<double, vector_size> m_vector;
 };

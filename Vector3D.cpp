@@ -92,3 +92,22 @@ double & Vector3D::operator[](size_t index_)
 	assert(index_ < vector_size);
 	return m_vector[index_];
 }
+
+const double & Vector3D::operator[](size_t index_) const
+{
+	assert(index_ < vector_size);
+	return m_vector[index_];
+}
+
+bool Vector3D::find(std::function<bool(double)> condition_, size_t & index_) const
+{
+	for(size_t i = 0; i < vector_size; ++i)
+	{
+		if (condition_(m_vector[i]))
+		{
+			index_ = i;
+			return true;
+		}
+	}
+	return false;
+}
