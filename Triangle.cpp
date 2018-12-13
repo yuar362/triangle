@@ -9,13 +9,40 @@
 bool getIntersection2D(const Vector3D & first_point_segment1_, const Vector3D & vector1_, const Vector3D & first_point_segment2_, 
 						const Vector3D & vector2_, Vector3D & intersection_point_)
 {
-	auto vector_first12 = first_point_segment2_ - first_point_segment1_;
-	auto vector_last12 = vector_first12 + vector2_ - vector1_;
+	auto vector_first12 = first_point_segment2_ - first_point_segment1_;	//вектор соединяющий начальные точки отрезков
+	auto vector_last12 = vector_first12 + vector2_ - vector1_;				//вектор соединяющий конечные точки отрезков
 	if (vector_first12.cross(vector_last12) == Vector3D())
 	{
 		//отрезки лежат на одной прямой
 
-
+		auto vector11_last_distanse = vector1_.length(); //расстояние до конца 1го отрезка от начала 1го отрезка
+		auto vector1_direction = vector1_.norm();
+		auto vector12_first_distanse = vector_first12 * vector1_direction;	 //расстояние до начала 2го отрезка от начала 1го отрезка
+		if (vector12_first_distanse <= vector11_last_distanse)
+		{
+			//случай чередования концов отрезков или все точки 2го лежат внутри первого отрезка
+			intersection_point_ = first_point_segment2_;
+			return true;
+		}
+		
+		auto vector12_last_distanse = vector12_first_distanse + vector2_ * vector1_direction; //расстояние до конца 2го отрезка от начала 1го отрезка
+		if (vector12_last_distanse <= vector11_last_distanse)
+		{
+			//случай чередования концов отрезков
+			intersection_point_ = first_point_segment2_ + vector2_;
+			return true;
+		}
+				
+		auto vector2_direction = vector2_.norm();
+		auto vector22_last_distance = vector2_ * vector2_direction;
+		auto vector21_first_distanse = (first_point_segment1_ - first_point_segment2_) * vector2_direction;
+		if (vector21_first_distanse <= vector22_last_distance)
+		{
+			//случай когда все точки 1го отрезка принадлежат второму 
+			intersection_point_ = first_point_segment1_;
+			return true;
+		}
+				
 		return false;
 	}
 	else
