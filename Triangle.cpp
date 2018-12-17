@@ -61,7 +61,7 @@ bool getIntersection2D(const Vector3D & first_point_segment1_, const Vector3D & 
 			size_t non_zero_element;
 			auto result = vector21.find([](double x) {return x != 0; }, non_zero_element);
 			assert(result);
-			auto rhs_vector = vector21.cross(vector_first12);
+			auto rhs_vector = vector2_.cross(vector_first12);
 			auto p1 = rhs_vector[non_zero_element]/vector21[non_zero_element];
 			if (p1 < 0 || p1 > 1)
 				return false;
@@ -75,7 +75,7 @@ bool getIntersection2D(const Vector3D & first_point_segment1_, const Vector3D & 
 	}
 }
 
-Triangle::Triangle(const point3d & point1_, const point3d & point2_, const point3d & point3_) : 
+Triangle::Triangle(const Vector3D & point1_, const Vector3D & point2_, const Vector3D & point3_) :
 	m_1st_point(point1_)
 	,m_2nd_point(point2_)
 	,m_3rd_point(point3_)
@@ -99,11 +99,10 @@ bool Triangle::isPointInTriangle(const Vector3D & point_) const
 	return (result_vector1 * result_vector2 >= 0) && (result_vector2 * result_vector3 >= 0);
 }
 
-bool Triangle::getIntersection(const point3d & first_point_, const point3d & last_point_, Vector3D & intersection_point_)
+bool Triangle::getIntersection(const Vector3D & first_point_, const Vector3D & last_point_, Vector3D & intersection_point_)
 {
-	Plane plane = getPlane();
-	Vector3D first_vector(first_point_), last_vector(last_point_);
-	Vector3D vector1 = first_vector - plane.m_point, vector2 = last_vector - plane.m_point;
+    Plane plane = getPlane();
+    Vector3D vector1 = first_point_ - plane.m_point, vector2 = last_point_ - plane.m_point;
 	auto scal = vector1 * plane.m_normal;
 	auto scal2 = vector2 * plane.m_normal;
 	if (scal * scal2 > 0 )
@@ -111,16 +110,16 @@ bool Triangle::getIntersection(const point3d & first_point_, const point3d & las
 		// Отрезок лежит с одной стороны от плоскости треугольника
 		return false;
 	}
-	else if (scal == 0 && scal2 == 0)
+    else if (scal == 0 && scal2 == 0)
 	{
-		auto segment = last_vector - first_vector;
+        auto segment = last_point_ - first_point_;
 		// случай когда отрезок и треугольник лежат в одной плоскости
 		//проверяем пересечение со всеми
-		if (getIntersection2D(first_vector, segment, m_1st_point, m_2nd_point - m_1st_point, intersection_point_))
+        if (getIntersection2D(first_point_, segment, m_1st_point, m_2nd_point - m_1st_point, intersection_point_))
 			return true;
-		if (getIntersection2D(first_vector, segment, m_2nd_point, m_3rd_point - m_2nd_point, intersection_point_))
+        if (getIntersection2D(first_point_, segment, m_2nd_point, m_3rd_point - m_2nd_point, intersection_point_))
 			return true;
-		if (getIntersection2D(first_vector, segment, m_3rd_point, m_1st_point - m_3rd_point, intersection_point_))
+        if (getIntersection2D(first_point_, segment, m_3rd_point, m_1st_point - m_3rd_point, intersection_point_))
 			return true;
 
 		return false;
@@ -131,10 +130,10 @@ bool Triangle::getIntersection(const point3d & first_point_, const point3d & las
 		// уравнение плоскости plane.m_normal * (x - plane.m_point) = 0
 		// уравнение отрезка x = segment * parameter + first_vector, где parameter принимает значение от 0 до 1 
 		// находим точку пересечения и смотрим лежит ли она внутри треугольникаж 
-		auto segment = last_vector - first_vector;
-		auto parameter = (plane.m_normal * (plane.m_point - first_vector)) / (plane.m_normal * segment);
+        auto segment = last_point_ - first_point_;
+        auto parameter = (plane.m_normal * (plane.m_point - first_point_)) / (plane.m_normal * segment);
 		assert(parameter >= 0 && parameter <= 1);
-		intersection_point_ = first_vector + segment * parameter;
+        intersection_point_ = first_point_ + segment * parameter;
 		return isPointInTriangle(intersection_point_);
 	}
 }

@@ -9,7 +9,7 @@ using point3d = std::array<double, 3>;
 class Triangle
 {
 public:
-	Triangle(const point3d & point1_, const point3d & point2_, const point3d& point3_);
+    Triangle(const Vector3D & point1_, const Vector3D & point2_, const Vector3D& point3_);
 
 	// получить плоскость в которой лежит треугольник
 	Plane getPlane() const;
@@ -21,7 +21,7 @@ public:
 	// если точки нет то вернЄт false
 	// если отрезок и треугольник лежат в одной плоскости и пересекаютс€, то вернЄт одну из точек пересечени€
 	//first_point_, last_point_ - начало и конец отрезка
-	bool getIntersection(const point3d & first_point_, const point3d & last_point_, Vector3D & intersection_point_);
+    bool getIntersection(const Vector3D & first_point_, const Vector3D & last_point_, Vector3D & intersection_point_);
 private:
 	Vector3D m_1st_point;
 	Vector3D m_2nd_point;
